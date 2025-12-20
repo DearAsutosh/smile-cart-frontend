@@ -13,12 +13,13 @@ const Product = () => {
 
   const fetchProduct = async () => {
     try {
-      const response = await productApi.show();
-      console.log(JSON.stringify(response.data));
-      setProduct(response.data);
-      setIsLoading(false);
+      const product = await productApi.show();
+      setProduct(product);
+      console.log(product);
     } catch (error) {
       console.log("An error occurred : ", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -33,14 +34,7 @@ const Product = () => {
     );
   }
 
-  const {
-    name,
-    description,
-    mrp,
-    offer_price: offerPrice,
-    image_urls: imageUrls,
-    image_url: imageUrl,
-  } = product;
+  const { name, description, mrp, offerPrice, imageUrls, imageUrl } = product;
   const totalDiscount = mrp - offerPrice;
   const discountPercentage = ((totalDiscount / mrp) * 100).toFixed(1);
 
