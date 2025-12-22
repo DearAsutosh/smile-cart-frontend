@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import productApi from "apis/products";
 import { Header, PageLoader, PageNotFound } from "components/commons";
+import AddToCart from "components/commons/AddToCart";
 import { Typography } from "neetoui";
 import { append, isNotNil } from "ramda";
 import { useParams } from "react-router-dom";
@@ -46,7 +47,6 @@ const Product = () => {
     <div className="m-2">
       <div className="flex items-center">
         <Header shouldShowBackButton="true" title={name} />
-        {/* <p className="py-2 text-4xl font-semibold">Infinix INBOOK</p> */}
       </div>
       <div className="mt-16 flex gap-4">
         <div className="w-2/5">
@@ -65,6 +65,7 @@ const Product = () => {
           <Typography className="font-semibold text-green-600">
             {discountPercentage}% off
           </Typography>
+          <AddToCart {...{ slug }} />
         </div>
       </div>
     </div>
