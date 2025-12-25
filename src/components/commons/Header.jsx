@@ -2,13 +2,15 @@ import { LeftArrow } from "neetoicons";
 import { Typography } from "neetoui";
 import { keys } from "ramda";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
+import routes from "routes";
 import useCartItemsStore from "stores/useCartItemsStore";
 
 const Header = ({ title, shouldShowBackButton = true, actionBlock }) => {
   const history = useHistory();
   const cartItemsCount = useCartItemsStore(
-    store => keys(store.cartItems).length
+    store =>
+      keys(store.cartItems).filter(s => parseInt(store.cartItems[s]) > 0).length
   );
 
   return (
@@ -33,7 +35,9 @@ const Header = ({ title, shouldShowBackButton = true, actionBlock }) => {
                 {cartItemsCount}
               </span>
             )}
-            <AiOutlineShoppingCart size="2rem" />
+            <Link to={routes.cart}>
+              <AiOutlineShoppingCart size="2rem" />
+            </Link>
           </div>
         </div>
       </div>

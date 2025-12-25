@@ -1,5 +1,5 @@
 import { isNotEmpty } from "neetocist";
-import { assoc, dissoc } from "ramda";
+import { assoc, dissoc, evolve, sum } from "ramda";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -13,12 +13,20 @@ const useCartItemsStore = create(
             return { cartItems: dissoc(slug, cartItems) };
           }
 
-          return { cartItems: assoc(slug, quantity, cartItems) };
+          return { cartItems: assoc(slug, String(quantity), cartItems) };
         });
       },
+      removeCartItem: slug => set(evolve({ cartItems: dissoc(slug) })),
     }),
     { name: "cart-items-store" }
   )
 );
 
 export default useCartItemsStore;
+export const cartTotalOf = (products, priceKey) => {
+  const { cartItems } = useCartItemsStore.getState();
+
+  return sum(
+    products.map(product => product[priceKey] * cartItems[product.slug])
+  );
+};
