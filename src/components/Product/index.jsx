@@ -54,6 +54,15 @@ const Product = () => {
   } = product;
   const totalDiscount = mrp - offerPrice;
   const discountPercentage = ((totalDiscount / mrp) * 100).toFixed(1);
+  console.log(
+    name,
+    description,
+    mrp,
+    offerPrice,
+    imageUrls,
+    imageUrl,
+    availableQuantity
+  );
 
   return (
     <div className="m-2">
