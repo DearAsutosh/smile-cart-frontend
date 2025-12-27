@@ -6,7 +6,9 @@ import Header from "components/commons/Header";
 import { MRP, OFFER_PRICE } from "components/constants";
 import { NoData, Toastr } from "neetoui";
 import { isEmpty, keys } from "ramda";
+import i18n from "src/common/i18n";
 import useCartItemsStore, { cartTotalOf } from "stores/useCartItemsStore";
+import withTitle from "utils/withTitle";
 
 import PriceCard from "./PriceCard";
 import ProductCard from "./ProductCard";
@@ -85,4 +87,4 @@ const Cart = () => {
   );
 };
 
-export default Cart;
+export default withTitle(Cart, i18n.t("cart.title"));
