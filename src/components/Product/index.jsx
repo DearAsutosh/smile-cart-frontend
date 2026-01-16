@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import productApi from "apis/products";
 import { Header, PageLoader, PageNotFound } from "components/commons";
 import AddToCart from "components/commons/AddToCart";
+import { useShowProduct } from "hooks/reactQuery/useProductsApi";
 import useSelectedQuantity from "hooks/useSelectedQuantity";
 import { Button, Typography } from "neetoui";
-import { append, isNotNil } from "ramda";
+import { isNotNil } from "ramda";
 import { useParams } from "react-router-dom";
 import routes from "routes";
 
@@ -14,11 +15,9 @@ import Carousel from "./Carousel";
 // import { IMAGE_URLS } from "./constants";
 
 const Product = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [product, setProduct] = useState({});
-  const [isError, setIsError] = useState(false);
   const { slug } = useParams();
 
+  const { data: product = {}, isLoading, isError } = useShowProduct(slug);
   const { selectedQuantity, setSelectedQuantity } = useSelectedQuantity(slug);
 
   useEffect(() => {
@@ -28,13 +27,12 @@ const Product = () => {
   const fetchProduct = async () => {
     try {
       const product = await productApi.show(slug);
-      setProduct(product);
+      // setProduct(product);
       console.log(product);
     } catch (error) {
       console.log("An error occurred : ", error);
-      setIsError(true);
     } finally {
-      setIsLoading(false);
+      // setIsLoading(false);
     }
   };
   if (isError) {
@@ -72,7 +70,7 @@ const Product = () => {
       <div className="mt-16 flex gap-4">
         <div className="w-2/5">
           {isNotNil(imageUrls) ? (
-            <Carousel imageUrls={append(imageUrl, imageUrls)} title={name} />
+            <Carousel />
           ) : (
             <img alt={name} className="w-48" src={imageUrl} />
           )}
