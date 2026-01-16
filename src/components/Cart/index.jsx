@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import productsApi from "apis/products";
 import { PageLoader } from "components/commons";
 import Header from "components/commons/Header";
 import { MRP, OFFER_PRICE } from "components/constants";
+import { useFetchCartProducts } from "hooks/reactQuery/useProductsApi";
 import { NoData, Toastr } from "neetoui";
 import { isEmpty, keys } from "ramda";
+import { useTranslation } from "react-i18next";
 import i18n from "src/common/i18n";
 import useCartItemsStore, { cartTotalOf } from "stores/useCartItemsStore";
 import withTitle from "utils/withTitle";
@@ -14,10 +16,10 @@ import PriceCard from "./PriceCard";
 import ProductCard from "./ProductCard";
 
 const Cart = () => {
-  const { cartItems, setSelectedQuantity } = useCartItemsStore.pick();
+  const { t } = useTranslation();
+  const { cartItems, setSelectedQuantity } = useCartItemsStore();
   const slugs = keys(cartItems);
-  const [products, setProducts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: products = [], isLoading } = useFetchCartProducts(slugs);
 
   const totalMrp = cartTotalOf(products, MRP);
   const totalOfferPrice = cartTotalOf(products, OFFER_PRICE);
@@ -27,26 +29,22 @@ const Cart = () => {
       const responses = await Promise.all(
         slugs.map(slug => productsApi.show(slug))
       );
-      setProducts(responses);
-      responses.forEach(({ availableQuantity, name, slug }) => {
-        const currentQty = parseInt(cartItems[slug]) || 0;
-        if (availableQuantity >= currentQty) return;
 
-        setSelectedQuantity(slug, String(availableQuantity));
+      responses.forEach(({ availableQuantity, name, slug }) => {
+        if (availableQuantity >= cartItems[slug]) return;
+
+        setSelectedQuantity(slug, availableQuantity);
         if (availableQuantity === 0) {
-          Toastr.error(
-            `${name} is no longer available and has been removed from cart`,
-            {
-              autoClose: 2000,
-            }
-          );
+          Toastr.error(t("product.error.removedFromCart", { name }), {
+            autoClose: 2000,
+          });
         }
       });
       console.log(responses);
     } catch (error) {
       console.log("An error occurred:", error);
     } finally {
-      setIsLoading(false);
+      isLoading(false);
     }
   };
 
