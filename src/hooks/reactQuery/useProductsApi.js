@@ -2,7 +2,7 @@ import { QUERY_KEYS } from "constants/query";
 
 import productsApi from "apis/products";
 import { Toastr } from "neetoui";
-import { existsBy, prop } from "ramda";
+import { any, prop, propEq } from "ramda";
 import { useTranslation } from "react-i18next";
 import { useQueries, useQuery } from "react-query";
 import useCartItemsStore from "stores/useCartItemsStore";
@@ -39,7 +39,7 @@ export const useFetchCartProducts = slugs => {
     }))
   );
   const data = responses.map(prop("data")).filter(Boolean);
-  const isLoading = existsBy({ isLoading: true }, responses);
+  const isLoading = any(propEq(true, "isLoading"), responses);
 
   return { data, isLoading };
 };
