@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, memo } from "react";
+import { useCallback, useEffect, useRef, useState, memo } from "react";
 
 import classNames from "classnames";
 import { useShowProduct } from "hooks/reactQuery/useProductsApi";
@@ -17,28 +17,27 @@ const Carousel = () => {
 
   const imageUrls = append(imageUrl, partialImageUrls);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     setCurrentIndex(prev => (prev + 1) % imageUrls.length);
-  };
+  }, [imageUrls.length]);
 
-  const handlePrevious = () => {
+  const handlePrevious = useCallback(() => {
     setCurrentIndex(prev => (prev - 1 + imageUrls.length) % imageUrls.length);
-  };
+  }, [imageUrls.length]);
 
-  const resetTimer = () => {
+  const resetTimer = useCallback(() => {
     clearInterval(timerRef.current);
     timerRef.current = setInterval(handleNext, 3000);
-  };
+  }, [handleNext]);
 
   useEffect(() => {
     resetTimer();
 
     return () => clearInterval(timerRef.current);
-  }, []);
+  }, [resetTimer]);
 
   return (
     <div className="flex flex-col items-center">
-      {/* Arrows + Image */}
       <div className="flex items-center">
         <Button
           className="shrink-0 focus-within:ring-0 hover:bg-transparent"

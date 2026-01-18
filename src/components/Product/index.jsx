@@ -1,6 +1,3 @@
-import { useEffect } from "react";
-
-import productApi from "apis/products";
 import { Header, PageLoader, PageNotFound } from "components/commons";
 import AddToCart from "components/commons/AddToCart";
 import { useShowProduct } from "hooks/reactQuery/useProductsApi";
@@ -12,29 +9,12 @@ import routes from "routes";
 
 import Carousel from "./Carousel";
 
-// import { IMAGE_URLS } from "./constants";
-
 const Product = () => {
   const { slug } = useParams();
 
   const { data: product = {}, isLoading, isError } = useShowProduct(slug);
   const { selectedQuantity, setSelectedQuantity } = useSelectedQuantity(slug);
 
-  useEffect(() => {
-    fetchProduct();
-  }, []);
-
-  const fetchProduct = async () => {
-    try {
-      const product = await productApi.show(slug);
-      // setProduct(product);
-      console.log(product);
-    } catch (error) {
-      console.log("An error occurred : ", error);
-    } finally {
-      // setIsLoading(false);
-    }
-  };
   if (isError) {
     return <PageNotFound />;
   }
@@ -50,17 +30,9 @@ const Product = () => {
     imageUrl,
     availableQuantity,
   } = product;
+
   const totalDiscount = mrp - offerPrice;
   const discountPercentage = ((totalDiscount / mrp) * 100).toFixed(1);
-  console.log(
-    name,
-    description,
-    mrp,
-    offerPrice,
-    imageUrls,
-    imageUrl,
-    availableQuantity
-  );
 
   return (
     <div className="m-2">
